@@ -1,0 +1,25 @@
+.navbar{
+    min-height: 4.45rem;
+    background-color: #2B1B9A;
+    font-family: Livvic, sans-serif;
+}
+.fixed-top {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+}
+.new_quotation .sidebar {
+    position: fixed;
+    background: white;
+}
+.new_quotation .sidebar-sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    position: relative;
+    top: 0;
+    padding-top: .5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+}

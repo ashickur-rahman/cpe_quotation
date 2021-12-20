@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$/libraries/vendor/composer" />
+      <path value="$PROJECT_DIR$/libraries/vendor/usmanhalalit/pixie" />
+      <path value="$PROJECT_DIR$/libraries/vendor/usmanhalalit/viocon" />
+    </include_path>
+  </component>
+</project>
