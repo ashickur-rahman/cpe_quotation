@@ -27,10 +27,11 @@ CREATE TABLE `cpe_complexity_picture` (
   `complexity_id` int unsigned DEFAULT NULL,
   `picture_name` varchar(100) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `show_in` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `cpe_complexity_price_cpe_service_complexity_id_fk` (`complexity_id`),
   CONSTRAINT `cpe_complexity_price_cpe_service_complexity_id_fk` FOREIGN KEY (`complexity_id`) REFERENCES `cpe_service_complexity` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +40,7 @@ CREATE TABLE `cpe_complexity_picture` (
 
 LOCK TABLES `cpe_complexity_picture` WRITE;
 /*!40000 ALTER TABLE `cpe_complexity_picture` DISABLE KEYS */;
-INSERT INTO `cpe_complexity_picture` VALUES (1,1,'clipping_path-category_1-sample_1_after.png','2021-12-22 10:08:38'),(2,1,'clipping_path-category_1-sample_3_after.png','2021-12-22 10:08:38'),(3,1,'clipping_path-category_1-sample_2_after.png','2021-12-22 10:09:53');
+INSERT INTO `cpe_complexity_picture` VALUES (1,1,'clipping_path-category_1-sample_1_after.png','2021-12-22 10:08:38','b'),(2,1,'clipping_path-category_1-sample_3_after.png','2021-12-22 10:08:38','b'),(3,1,'clipping_path-category_1-sample_2_after.png','2021-12-22 10:09:53','v'),(4,1,'clipping_path-category_1-sample_1_before.png','2021-12-22 10:54:24',''),(5,1,'clipping_path-category_1-sample_3_before.png','2021-12-22 10:56:37',NULL),(6,1,'clipping_path-category_1-sample_2_before.jpg','2021-12-22 10:57:20',NULL);
 /*!40000 ALTER TABLE `cpe_complexity_picture` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -262,4 +263,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-12-22 16:45:03
+-- Dump completed on 2021-12-22 17:20:35
