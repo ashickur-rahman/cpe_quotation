@@ -119,14 +119,21 @@ $parentServices=$db::table('parent_service')->select(array("name","id"))->get();
                                     <div id="flush-collapse<?=$pService->id?>" class="accordion-collapse collapse" aria-labelledby="flush-heading<?=$pService->id?>" data-bs-parent="#parentServiceShow">
 
                                         <?php
+
                                             if(count($childServices)==1)
                                             {
+                                                $childService=$childServices['0'];
+
+                                                $childServiceDetails=$db::table('service_all')->select("*")
+                                                    ->where("service_id",$childService->id)
+                                                    ->get();
+
                                                 ?>
                                                     <div class="accordion-body" style="background-color:aqua">
                                                         <?=$pService->name?>
                                                         <div class="row justify-content-start d-flex card-complexity-wrapper">
                                                             <?php
-                                                                for ($i=0;$i<5;$i++)
+                                                                foreach ($childServiceDetails as $detail)
                                                                 {
                                                                     ?>
                                                                     <div class="col">
@@ -137,11 +144,11 @@ $parentServices=$db::table('parent_service')->select(array("name","id"))->get();
                                                                                     <div class="col-auto">
                                                                                         <div class="custom-control custom-radio">
                                                                                             <input type="radio" name="clipping-path" id="clipping-path_clipping-path_c1" value="clipping-path_c1" class="custom-control-input product">
-                                                                                            <label class="custom-control-label" for="clipping-path_clipping-path_c1">Complexity <?=$i+1?></label>
+                                                                                            <label class="custom-control-label" for="clipping-path_clipping-path_c1">Complexity <?=$detail->complexity_name?></label>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="col-auto text-right">
-                                                                                        <span class="complexity-amount money" data-currency-usd="$0.39 USD">$<?=rand(1,5)?> USD</span>
+                                                                                        <span class="complexity-amount money" data-currency-usd="">$<?=$detail->price?> USD</span>
                                                                                     </div>
                                                                                 </div>
 
@@ -150,7 +157,7 @@ $parentServices=$db::table('parent_service')->select(array("name","id"))->get();
                                                                                         <div class="thumbnail"><img src="https://cdn.shopify.com/s/files/1/1859/8979/products/clipping_path-category_1-sample_1_after.jpg?v=1633370659"></div>
                                                                                         <div class="thumbnail"><img src="https://cdn.shopify.com/s/files/1/1859/8979/products/clipping_path-category_1-sample_3_after.jpg?v=1633370659"></div>
 
-                                                                                        <div class="thumbnail view-more" data-service-complexity="" data-modal-title="Clipping path, category 1">
+                                                                                        <div class="thumbnail view-more" data-service-complexity="<?=$detail->service_complexity_id?>" data-modal-title="<?=$pService->name?>, Complexity <?=$detail->complexity_name?>">
                                                                                             <img src="https://cdn.shopify.com/s/files/1/1859/8979/products/clipping_path-category_1-sample_2_after.jpg?v=1633370659">
                                                                                             <div class="view-more-background"></div>
                                                                                             <div class="view-more-text small">VIEW MORE</div>
