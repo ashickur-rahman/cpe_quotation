@@ -1,5 +1,8 @@
 <?php
 include __DIR__ . "/../libraries/classes/dbConnect.php";
+include __DIR__ . "/../libraries/settings.php";
+include __DIR__ . "/../libraries/classes/compexityPictures.php";
+
 include "child-services.php";
 
 $db=DB::class;
@@ -143,8 +146,9 @@ $parentServices=$db::table('parent_service')->select(array("name","id"))->get();
                                                                                 <div class="row justify-content-between">
                                                                                     <div class="col-auto">
                                                                                         <div class="custom-control custom-radio">
-                                                                                            <input type="radio" name="clipping-path" id="clipping-path_clipping-path_c1" value="clipping-path_c1" class="custom-control-input product">
-                                                                                            <label class="custom-control-label" for="clipping-path_clipping-path_c1">Complexity <?=$detail->complexity_name?></label>
+                                                                                            <input type="radio"
+                                                                                                   name="clipping-path" id="<?=complexityNameGenerate($detail->service_complexity_id)?>" value="<?=$detail->service_complexity_id?>" class="custom-control-input product">
+                                                                                            <label class="custom-control-label" for="<?=complexityNameGenerate($detail->service_complexity_id)?>">Complexity <?=$detail->complexity_name?></label>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="col-auto text-right">
@@ -154,11 +158,48 @@ $parentServices=$db::table('parent_service')->select(array("name","id"))->get();
 
                                                                                 <div class="row mt-2 ">
                                                                                     <div class="col thumbnails d-flex justify-content-between">
-                                                                                        <div class="thumbnail"><img src="https://cdn.shopify.com/s/files/1/1859/8979/products/clipping_path-category_1-sample_1_after.jpg?v=1633370659"></div>
-                                                                                        <div class="thumbnail"><img src="https://cdn.shopify.com/s/files/1/1859/8979/products/clipping_path-category_1-sample_3_after.jpg?v=1633370659"></div>
+                                                                                        <?php
+                                                                                            $complexityPictures=$db::table('complexity_picture')->select("picture_name","show_in")
+                                                                                                ->where("complexity_id",$detail->service_complexity_id)
+                                                                                                ->orderBy('show_in')
+                                                                                                ->get();
+                                                                                            //var_dump
+                                                                                            ($complexityPictures);
+                                                                                            $showThumbnail='';
+                                                                                            $showViewMore='';
+                                                                                            $modalPicture=array();
 
-                                                                                        <div class="thumbnail view-more" data-service-complexity="<?=$detail->service_complexity_id?>" data-modal-title="<?=$pService->name?>, Complexity <?=$detail->complexity_name?>">
-                                                                                            <img src="https://cdn.shopify.com/s/files/1/1859/8979/products/clipping_path-category_1-sample_2_after.jpg?v=1633370659">
+
+                                                                                            foreach
+                                                                                            ($complexityPictures as
+                                                                                        $picture)
+                                                                                        {
+                                                                                            if($picture->show_in=="b")
+                                                                                            {
+                                                                                                $showThumbnail.='<div class="thumbnail"><img src="'.$imageLocation.complexityNameGenerate($detail->service_complexity_id)."-".$picture->picture_name.'_after.png"></div>';
+                                                                                            }
+                                                                                            else if
+                                                                                            ($picture->show_in=="v")
+                                                                                            {
+                                                                                                $showViewMore=$imageLocation.complexityNameGenerate($detail->service_id).'-'.$picture->picture_name.'_after.png';
+                                                                                            }
+
+                                                                                            array_push($modalPicture,
+                                                                                                $picture->picture_name);
+
+                                                                                        }
+                                                                                            echo $showThumbnail;
+
+                                                                                            $modalPicture=json_encode($modalPicture);
+
+                                                                                        ?>
+
+
+                                                                                        <div class="thumbnail
+                                                                                        view-more" data-picture='<?=$modalPicture?>'
+                                                                                              data-service-complexity="<?=complexityNameGenerate($detail->service_complexity_id)?>" data-modal-title="<?=$pService->name?>, Complexity <?=$detail->complexity_name?>">
+                                                                                            <img
+                                                                                            src="<?=$showViewMore?>">
                                                                                             <div class="view-more-background"></div>
                                                                                             <div class="view-more-text small">VIEW MORE</div>
                                                                                         </div>
@@ -267,6 +308,10 @@ $parentServices=$db::table('parent_service')->select(array("name","id"))->get();
 <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
 <script>
     $(document).on('click','.view-more',function(){
+        var allPics=$(this).data('picture');
+        var serviceComplexity=$(this).data('service-complexity');
+        serviceComplexityA=name.split('_');
+        var ComplexityId=serviceComplexityA[serviceComplexityA.length - 1];
         $("#complexityPicModal").modal('toggle')
     });
 </script>
