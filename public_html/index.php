@@ -129,6 +129,7 @@ $parentServices=$db::table('parent_service')->select(array("name","id"))->get();
 
                                                 $childServiceDetails=$db::table('service_all')->select("*")
                                                     ->where("service_id",$childService->id)
+                                                    //->where ("service_complexity_id","1")
                                                     ->get();
 
                                                 ?>
@@ -240,80 +241,48 @@ $parentServices=$db::table('parent_service')->select(array("name","id"))->get();
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="complexityPicModalTitle"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="container-lg my-3">
-                    <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
-                        <!-- Carousel indicators -->
-                        <ol class="carousel-indicators">
-                            <li data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"></li>
-                            <li data-bs-target="#myCarousel" data-bs-slide-to="1"></li>
-                            <li data-bs-target="#myCarousel" data-bs-slide-to="2"></li>
-                        </ol>
+<!--                    <div id="carousel" class="carousel slide" data-ride="carousel">-->
+<!--                        <ol class="carousel-indicators"></ol>-->
+<!--                        <div class="carousel-inner"></div>-->
+<!--                        <a class="carousel-control-prev" href="#demo" data-slide="prev">-->
+<!--                            <span class="carousel-control-prev-icon"></span>-->
+<!--                        </a>-->
+<!--                        <a class="carousel-control-next" href="#demo" data-slide="next">-->
+<!--                            <span class="carousel-control-next-icon"></span>-->
+<!--                        </a>-->
+<!--                    </div>-->
+                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" >
+                        <div id="bbb" class="carousel-indicators">
 
-                        <!-- Wrapper for carousel items -->
-
-                        <div class="carousel-inner" style="background-color: aqua">
-                            <div class="carousel-item active text-center" >
-                                <figure class="figure mx-3">
-                                    <img src="https://cdn.shopify.com/s/files/1/1859/8979/products/clipping_path-category_1-sample_1_before.jpg?v=1633370659" class="figure-img img-fluid rounded shadow" alt="Original image" width="366" height="366">
-                                    <figcaption class="figure-caption small mt-3">BEFORE</figcaption>
-                                </figure>
-                                <figure class="figure mx-3">
-                                    <img src="https://cdn.shopify.com/s/files/1/1859/8979/products/clipping_path-category_1-sample_1_after.jpg?v=1633370659" class="figure-img img-fluid rounded shadow" alt="Edited image" width="366" height="366">
-                                    <figcaption class="figure-caption small mt-3">AFTER</figcaption>
-                                </figure>
-                            </div>
-                            <div class="carousel-item text-center">
-                                <figure class="figure mx-3">
-                                    <img src="https://cdn.shopify.com/s/files/1/1859/8979/products/clipping_path-category_1-sample_1_before.jpg?v=1633370659" class="figure-img img-fluid rounded shadow" alt="Original image" width="366" height="366">
-                                    <figcaption class="figure-caption small mt-3">BEFORE</figcaption>
-                                </figure>
-                                <figure class="figure mx-3">
-                                    <img src="https://cdn.shopify.com/s/files/1/1859/8979/products/clipping_path-category_1-sample_1_after.jpg?v=1633370659" class="figure-img img-fluid rounded shadow" alt="Edited image" width="366" height="366">
-                                    <figcaption class="figure-caption small mt-3">AFTER</figcaption>
-                                </figure>
-                            </div>
-                            <div class="carousel-item text-center">
-                                <figure class="figure mx-3">
-                                    <img src="https://cdn.shopify.com/s/files/1/1859/8979/products/clipping_path-category_1-sample_1_before.jpg?v=1633370659" class="figure-img img-fluid rounded shadow" alt="Original image" width="366" height="366">
-                                    <figcaption class="figure-caption small mt-3">BEFORE</figcaption>
-                                </figure>
-                                <figure class="figure mx-3">
-                                    <img src="https://cdn.shopify.com/s/files/1/1859/8979/products/clipping_path-category_1-sample_1_after.jpg?v=1633370659" class="figure-img img-fluid rounded shadow" alt="Edited image" width="366" height="366">
-                                    <figcaption class="figure-caption small mt-3">AFTER</figcaption>
-                                </figure>
-                            </div>
                         </div>
+                        <div class="carousel-inner" id="aaa" >
 
-                        <!-- Carousel controls -->
-                        <a class="carousel-control-prev" href="#myCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon"></span>
-                        </a>
-                        <a class="carousel-control-next" href="#myCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon"></span>
-                        </a>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                            <span class="icon-arrow-with-circle-left nav-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                            <span class="icon-arrow-with-circle-right nav-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
+
         </div>
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
 <script>
-    $(document).on('click','.view-more',function(){
-        var allPics=$(this).data('picture');
-        var serviceComplexity=$(this).data('service-complexity');
-        serviceComplexityA=name.split('_');
-        var ComplexityId=serviceComplexityA[serviceComplexityA.length - 1];
-        $("#complexityPicModal").modal('toggle')
-    });
+
+
+
 </script>
 </body>
 </html>
