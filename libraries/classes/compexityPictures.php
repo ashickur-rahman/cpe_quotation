@@ -16,3 +16,11 @@ if(!function_exists("complexityNameGenerate"))
             .$complexityDetails[0]->complexity_name;
     }
 }
+if(!function_exists("serviceNameShort"))
+{
+    function serviceNameShort($name)
+    {
+
+        return strtolower(str_replace(" ","_",$name));
+    }
+}

@@ -4,7 +4,6 @@
 -- ------------------------------------------------------
 -- Server version	8.0.27
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -172,6 +171,7 @@ SET @saved_cs_client     = @@character_set_client;
  1 AS `service_complexity_id`,
  1 AS `price`,
  1 AS `show_default`,
+ 1 AS `time_price`,
  1 AS `complexity_name`,
  1 AS `service_id`,
  1 AS `service_name`,
@@ -217,13 +217,13 @@ DROP TABLE IF EXISTS `cpe_service_complexity_price`;
 CREATE TABLE `cpe_service_complexity_price` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `service_complexity_id` int unsigned NOT NULL,
-  `time` int NOT NULL,
+  `time_price` int NOT NULL,
   `price` double NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `show_default` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unique` (`service_complexity_id`,`time`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
+  UNIQUE KEY `unique` (`service_complexity_id`,`time_price`)
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -232,7 +232,7 @@ CREATE TABLE `cpe_service_complexity_price` (
 
 LOCK TABLES `cpe_service_complexity_price` WRITE;
 /*!40000 ALTER TABLE `cpe_service_complexity_price` DISABLE KEYS */;
-INSERT INTO `cpe_service_complexity_price` VALUES (1,7,6,1.5,NULL,0),(2,13,12,1.25,NULL,0),(3,14,24,1,NULL,0),(4,15,6,2,NULL,0),(5,12,12,1.7,NULL,0),(6,1,6,1,NULL,0),(7,5,12,0.5,NULL,0),(8,2,12,0.5,NULL,0),(9,6,24,0.2,NULL,0),(10,10,6,1,NULL,0),(11,11,12,0.5,NULL,0);
+INSERT INTO `cpe_service_complexity_price` VALUES (1,1,6,1,'2021-12-26 09:51:37',1),(2,1,12,0.8,'2021-12-26 09:52:25',0),(3,1,18,0.6,'2021-12-26 09:52:25',0),(4,1,24,0.5,'2021-12-26 09:52:43',0),(5,2,6,1.1,'2021-12-26 09:53:27',1),(6,2,12,1,'2021-12-26 09:53:27',0),(7,2,18,0.8,'2021-12-26 09:53:27',0),(8,2,24,0.6,'2021-12-26 09:53:27',0),(9,3,6,1.2,'2021-12-26 09:57:23',1),(10,3,12,1,'2021-12-26 09:57:23',0),(11,3,18,0.9,'2021-12-26 09:57:23',0),(12,3,24,0.8,'2021-12-26 09:57:23',0),(13,4,6,1.3,'2021-12-26 09:58:23',1),(14,4,12,1.1,'2021-12-26 09:58:23',0),(15,4,18,1,'2021-12-26 09:58:23',0),(16,4,24,0.9,'2021-12-26 09:58:23',0),(17,5,6,1.2,'2021-12-26 10:00:12',1),(18,5,12,1,'2021-12-26 10:00:12',0),(19,5,18,0.9,'2021-12-26 10:00:12',0),(20,5,24,0.8,'2021-12-26 10:00:12',0),(21,6,6,1.3,'2021-12-26 10:00:12',1),(22,6,12,1.1,'2021-12-26 10:00:12',0),(23,6,18,0.95,'2021-12-26 10:00:12',0),(24,6,24,0.85,'2021-12-26 10:00:12',0),(25,7,6,1.2,'2021-12-26 10:02:07',1),(26,7,12,1,'2021-12-26 10:02:07',0),(27,7,18,0.9,'2021-12-26 10:02:07',0),(28,7,24,0.8,'2021-12-26 10:02:07',0),(29,8,6,1.3,'2021-12-26 10:02:07',1),(30,8,12,1.1,'2021-12-26 10:02:07',0),(31,8,18,0.97,'2021-12-26 10:02:07',0),(32,8,24,0.87,'2021-12-26 10:02:07',0),(33,9,6,1.2,'2021-12-26 10:06:40',1),(34,9,12,1,'2021-12-26 10:06:40',0),(35,9,18,0.9,'2021-12-26 10:06:40',0),(36,9,24,0.1,'2021-12-26 10:06:40',0),(37,10,6,1.3,'2021-12-26 10:06:40',1),(38,10,12,1.1,'2021-12-26 10:06:40',0),(39,10,18,0.99,'2021-12-26 10:06:40',0),(40,10,24,0.89,'2021-12-26 10:06:40',0),(41,11,6,1.2,'2021-12-26 10:07:34',1),(42,11,12,1,'2021-12-26 10:07:34',0),(43,11,18,0.9,'2021-12-26 10:07:34',0),(44,11,24,0.1,'2021-12-26 10:07:34',0),(45,12,6,1.3,'2021-12-26 10:07:34',1),(46,12,12,1.1,'2021-12-26 10:07:34',0),(47,12,18,0.99,'2021-12-26 10:07:34',0),(48,12,24,0.89,'2021-12-26 10:07:34',0),(49,13,6,1.2,'2021-12-26 10:08:04',1),(50,13,12,1,'2021-12-26 10:08:04',0),(51,13,18,0.9,'2021-12-26 10:08:04',0),(52,13,24,0.1,'2021-12-26 10:08:04',0),(53,14,6,1.3,'2021-12-26 10:08:04',1),(54,14,12,1.1,'2021-12-26 10:08:04',0),(55,14,18,0.99,'2021-12-26 10:08:04',0),(56,14,24,0.89,'2021-12-26 10:08:04',0),(57,15,6,1.2,'2021-12-26 10:08:24',1),(58,15,12,1,'2021-12-26 10:08:24',0),(59,15,18,0.9,'2021-12-26 10:08:24',0),(60,15,24,0.1,'2021-12-26 10:08:24',0);
 /*!40000 ALTER TABLE `cpe_service_complexity_price` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -249,7 +249,7 @@ UNLOCK TABLES;
 /*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `cpe_service_all` AS select `cpe_service_complexity_price`.`id` AS `id`,`cpe_service_complexity_price`.`service_complexity_id` AS `service_complexity_id`,`cpe_service_complexity_price`.`price` AS `price`,`cpe_service_complexity_price`.`show_default` AS `show_default`,`cpe_service_complexity`.`name` AS `complexity_name`,`cpe_service`.`id` AS `service_id`,`cpe_service`.`name` AS `service_name`,`cpe_service`.`parent_service` AS `service_parent` from ((`cpe_service_complexity_price` join `cpe_service_complexity`) join `cpe_service`) where ((`cpe_service_complexity_price`.`service_complexity_id` = `cpe_service_complexity`.`id`) and (`cpe_service`.`id` = `cpe_service_complexity`.`service_id`)) */;
+/*!50001 VIEW `cpe_service_all` AS select `cpe_service_complexity_price`.`id` AS `id`,`cpe_service_complexity_price`.`service_complexity_id` AS `service_complexity_id`,`cpe_service_complexity_price`.`price` AS `price`,`cpe_service_complexity_price`.`show_default` AS `show_default`,`cpe_service_complexity_price`.`time_price` AS `time_price`,`cpe_service_complexity`.`name` AS `complexity_name`,`cpe_service`.`id` AS `service_id`,`cpe_service`.`name` AS `service_name`,`cpe_service`.`parent_service` AS `service_parent` from ((`cpe_service_complexity_price` join `cpe_service_complexity`) join `cpe_service`) where ((`cpe_service_complexity_price`.`service_complexity_id` = `cpe_service_complexity`.`id`) and (`cpe_service`.`id` = `cpe_service_complexity`.`service_id`)) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -263,4 +263,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-12-23 16:58:48
+-- Dump completed on 2021-12-26 17:22:56

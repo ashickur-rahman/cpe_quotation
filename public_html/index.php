@@ -9,7 +9,7 @@ $db=DB::class;
 //$allCategory=$pdo->query("select * from cpe_service")->fetchall();
 $parentServices=$db::table('parent_service')->select(array("name","id"))->get();
 
-
+$allData=array();
 ?>
 
 <!DOCTYPE html>
@@ -139,6 +139,10 @@ $parentServices=$db::table('parent_service')->select(array("name","id"))->get();
                                                             <?php
                                                                 foreach ($childServiceDetails as $detail)
                                                                 {
+                                                                    if($detail->show_default!=1)
+                                                                    {
+                                                                        continue;
+                                                                    }
                                                                     ?>
                                                                     <div class="col">
                                                                         <div class="card card-complexity my-2">
@@ -148,12 +152,14 @@ $parentServices=$db::table('parent_service')->select(array("name","id"))->get();
                                                                                     <div class="col-auto">
                                                                                         <div class="custom-control custom-radio">
                                                                                             <input type="radio"
-                                                                                                   name="clipping-path" id="<?=complexityNameGenerate($detail->service_complexity_id)?>" value="<?=$detail->service_complexity_id?>" class="custom-control-input product">
-                                                                                            <label class="custom-control-label" for="<?=complexityNameGenerate($detail->service_complexity_id)?>">Complexity <?=$detail->complexity_name?></label>
+                                                                                                   name="<?=serviceNameShort($pService->name)?>"
+                                                                                                   id="complex-<?=$detail->service_complexity_id?>" value="<?=$detail->service_complexity_id?>" class="custom-control-input product complexity-select" data-price="<?=$detail->price?>">
+                                                                                            <label class="custom-control-label" for="complex-<?=$detail->service_complexity_id?>">Complexity <?=$detail->complexity_name?></label>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div class="col-auto text-right">
-                                                                                        <span class="complexity-amount money" data-currency-usd="">$<?=$detail->price?> USD</span>
+                                                                                        <span
+                                                                                                class="complexity-amount money" >$<span class="complexity-price"><?=$detail->price?></span> USD</span>
                                                                                     </div>
                                                                                 </div>
 
@@ -281,6 +287,14 @@ $parentServices=$db::table('parent_service')->select(array("name","id"))->get();
 <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
 <script>
 
+$(document).ready(function (){
+    $('.complexity-select').prop('checked', false);
+})
+$(".complexity-select").on("change",function (){
+    price=$(this).parent().parent().parent().find(".complexity-price").html();
+    console.log(price)
+
+})
 
 
 </script>
