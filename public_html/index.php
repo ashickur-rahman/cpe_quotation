@@ -2,6 +2,7 @@
 include __DIR__ . "/../libraries/classes/dbConnect.php";
 include __DIR__ . "/../libraries/settings.php";
 include __DIR__ . "/../libraries/classes/compexityPictures.php";
+include __DIR__ . "/../libraries/classes/complexityBlock.php";
 
 include "child-services.php";
 
@@ -143,81 +144,8 @@ $allData=array();
 
                                                                     if($detail->show_default==1)
                                                                     {
-                                                                        ?>
-                                                                            <div class="col">
-                                                                                <div class="card card-complexity my-2">
-                                                                                <div class="card-body">
+                                                                        echo complexity_bloc_show($pService->name,$detail,$imageLocation);
 
-                                                                                    <div class="row justify-content-between">
-                                                                                        <div class="col-auto">
-                                                                                            <div class="custom-control custom-radio">
-                                                                                                <input type="radio"
-                                                                                                       name="<?=serviceNameShort($pService->name)?>"
-                                                                                                       id="complex-<?=$detail->service_complexity_id?>" value="<?=$detail->service_complexity_id?>" class="custom-control-input product complexity-select" data-price="<?=$detail->price?>">
-                                                                                                <label class="custom-control-label" for="complex-<?=$detail->service_complexity_id?>">Complexity <?=$detail->complexity_name?></label>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <div class="col-auto text-right">
-                                                                                        <span
-                                                                                                class="complexity-amount money" >$<span class="complexity-price"><?=$detail->price?></span> USD</span>
-                                                                                        </div>
-                                                                                    </div>
-
-                                                                                    <div class="row mt-2 ">
-                                                                                        <div class="col thumbnails d-flex justify-content-between">
-                                                                                            <?php
-                                                                                            $complexityPictures=$db::table('complexity_picture')->select("picture_name","show_in")
-                                                                                                ->where("complexity_id",$detail->service_complexity_id)
-                                                                                                ->orderBy('show_in')
-                                                                                                ->get();
-                                                                                            //var_dump
-                                                                                            ($complexityPictures);
-                                                                                            $showThumbnail='';
-                                                                                            $showViewMore='';
-                                                                                            $modalPicture=array();
-
-
-                                                                                            foreach
-                                                                                            ($complexityPictures as
-                                                                                             $picture)
-                                                                                            {
-                                                                                                if($picture->show_in=="b")
-                                                                                                {
-                                                                                                    $showThumbnail.='<div class="thumbnail"><img src="'.$imageLocation.complexityNameGenerate($detail->service_complexity_id)."-".$picture->picture_name.'_after.png"></div>';
-                                                                                                }
-                                                                                                else if
-                                                                                                ($picture->show_in=="v")
-                                                                                                {
-                                                                                                    $showViewMore=$imageLocation.complexityNameGenerate($detail->service_id).'-'.$picture->picture_name.'_after.png';
-                                                                                                }
-
-                                                                                                array_push($modalPicture,
-                                                                                                    $picture->picture_name);
-
-                                                                                            }
-                                                                                            echo $showThumbnail;
-
-                                                                                            $modalPicture=json_encode($modalPicture);
-
-                                                                                            ?>
-
-
-                                                                                            <div class="thumbnail
-                                                                                        view-more" data-picture='<?=$modalPicture?>'
-                                                                                                 data-service-complexity="<?=complexityNameGenerate($detail->service_complexity_id)?>" data-modal-title="<?=$pService->name?>, Complexity <?=$detail->complexity_name?>">
-                                                                                                <img
-                                                                                                        src="<?=$showViewMore?>">
-                                                                                                <div class="view-more-background"></div>
-                                                                                                <div class="view-more-text small">VIEW MORE</div>
-                                                                                            </div>
-
-                                                                                        </div>
-                                                                                    </div>
-
-                                                                                </div>
-                                                                            </div>
-                                                                            </div>
-                                                                        <?
                                                                     }
                                                                 }
                                                             ?>
@@ -227,20 +155,7 @@ $allData=array();
                                             }
                                             else
                                             {
-                                                foreach ($childServices as $childService)
-                                                {
-                                                    $childServiceDetails=$db::table('service_all')->select("*")
-                                                        ->where("service_id",$childService->id)
-                                                        ->orderBy ("service_complexity_id")
-                                                        ->get();
-                                                    foreach ($childServiceDetails as $detail)
-                                                    {
-
-                                                    }
-
-                                                }
-
-                                                $childServiceData= showChildServices($childServices,$pService->id);
+                                                $childServiceData= showChildServices($childServices,$pService->id,$imageLocation);
                                                 echo $childServiceData['cmplx_block'];
                                                 $allData=array_merge($allData,$childServiceData['all_data']);
 
@@ -251,7 +166,7 @@ $allData=array();
                                 </div>
                                 <?
                             }
-                            var_dump(json_decode(json_encode($allData),true)); ;
+                            //var_dump(json_decode(json_encode($allData),true)); ;
                         ?>
 
                     </div>

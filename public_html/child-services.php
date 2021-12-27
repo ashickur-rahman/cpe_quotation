@@ -2,10 +2,12 @@
 include __DIR__ . "/../libraries/classes/dbConnect.php";
 include __DIR__ . "/../libraries/settings.php";
 include __DIR__ . "/../libraries/classes/compexityPictures.php";
+include __DIR__ . "/../libraries/classes/complexityBlock.php";
+
 
 if(!function_exists("showChildServices"))
 {
-    function showChildServices (Array $childServices,$parentServiceId,$db=DB::class)
+    function showChildServices (Array $childServices,$parentServiceId,$imageLocation,$db=DB::class)
     {
 
         $return= '<div class="accordion accordion-flush" id="childServiceShow'.$parentServiceId.'">';
@@ -20,7 +22,8 @@ if(!function_exists("showChildServices"))
       </button>
     </h2>
     <div id="child-flush-collapse'.$childService->id.'" class="accordion-collapse collapse" aria-labelledby="child-flush-heading'.$childService->id.'" data-bs-parent="#childServiceShow'.$parentServiceId.'">
-      <div class="accordion-body">';
+      <div class="accordion-body" style="background-color:aqua">
+      <div class="row justify-content-start d-flex card-complexity-wrapper">';
 //complexity code
             $childServiceDetails=$db::table('service_all')->select("*")
                 ->where("service_id",$childService->id)
@@ -29,10 +32,13 @@ if(!function_exists("showChildServices"))
             foreach ($childServiceDetails as $detail)
             {
                 $allData["srv-".$childService->id]["cmp-".$detail->service_complexity_id]["h-".$detail->time_price]=$detail->price;
+                if($detail->show_default==1) {
+                    $return .= complexity_bloc_show($childService->name, $detail, $imageLocation);
+                }
             }
 $return.='</div>
     </div>
-  </div>';
+  </div></div>';
         }
         $return.="</div>";
         $returnArr['cmplx_block']=$return;
