@@ -12,7 +12,7 @@ $config=[
     'host'      => 'localhost',
     'database'  => 'cpe_quotation',
     'username'  => 'root',
-    'password'  => '1q2w3e4r',
+    'password'  => 'Q!w2e3r4',
     'charset'   => 'utf8', // Optional
     'collation' => 'utf8_unicode_ci', // Optional
     'prefix'    => 'cpe_', // Table prefix, optional
@@ -22,11 +22,15 @@ $config=[
     ],
 ];
 
-try {
-     new Pixie\Connection("mysql",$config,'DB');
-}catch (Exception $exceptione){
-    echo "Couldn't connect DB";
+if(!class_exists("DB"))
+{
+    try {
+        new Pixie\Connection("mysql",$config,'DB');
+    }catch (Exception $exceptione){
+        echo "Couldn't connect DB";
+    }
 }
+
 
 //
 //$dsn = "mysql:host=localhost;dbname=cpe_quotation;charset=UTF8";
