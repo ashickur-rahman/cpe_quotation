@@ -13,6 +13,7 @@ if(!function_exists("showChildServices"))
         $return= '<div class="accordion accordion-flush" id="childServiceShow'.$parentServiceId.'">';
         foreach ($childServices as $childService)
         {
+            //var_dump($childService);
             //$allData["srv-".$childService->id]["cmp-".$detail->service_complexity_id]=array();
 
             $return.='<div class="accordion-item">
@@ -23,7 +24,9 @@ if(!function_exists("showChildServices"))
     </h2>
     <div id="child-flush-collapse'.$childService->id.'" class="accordion-collapse collapse" aria-labelledby="child-flush-heading'.$childService->id.'" data-bs-parent="#childServiceShow'.$parentServiceId.'">
       <div class="accordion-body" style="background-color:aqua">
-      <div class="row justify-content-start d-flex card-complexity-wrapper">';
+      <div class="row justify-content-start d-flex card-complexity-wrapper service-id"
+                                                             data-service-id="srv-'
+                                                             .$childService->id.'">';
 //complexity code
             $childServiceDetails=$db::table('service_all')->select("*")
                 ->where("service_id",$childService->id)
