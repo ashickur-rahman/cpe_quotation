@@ -265,6 +265,8 @@ $allData=array();
 
         }
     }
+
+
 var bb='';
 var allData='<?php echo json_encode($allData) ?>'
 allData= JSON.parse(allData);
@@ -274,7 +276,14 @@ var cmpPriceByHour={}; //complexity all price store as hour
 var defaultPriceHour="h-6";
 $(document).ready(function (){
     $('.complexity-select').prop('checked', false);
+
+
+
 });
+
+
+
+
 $(".complexity-select").on("change",function (){
     serviceId=$(this).parent().closest('.service-id').attr("data-service-id")
     cmpId=$(this).attr("data-complexity-id")
@@ -296,6 +305,15 @@ $("#next-button").on("click",function (){
 
     var currentDiv=$(this).attr("data-current");
     var nextDiv=$("#"+currentDiv).attr("data-next")
+
+    if(currentDiv=="main-show")
+    {
+        if(Object.keys(cmpPriceByHour).length==0)
+        {
+            console.log("no")
+            return
+        }
+    }
     // var previousDiv=$("#"+currentDiv).attr("data-previous")
 
     $("#previous-button").attr("data-previous",currentDiv)
@@ -327,53 +345,7 @@ $("#previous-button").on("click",function (){
     $("#"+previousDiv).show();
 });
 
-// $("#next-button").on("click",function (){
-//
-//     var nextShow=$(this).attr("data-next")
-//     var currentdiv=$(this).attr("data-current")
-//     if(currentdiv=="main-show")
-//     {
-//         $(this).attr("data-next","images-block")
-//         $("#previous-button").prop('disabled', false);
-//     }
-//     else if(currentdiv=="price-by-time")
-//     {
-//         $(this).attr("data-next","final-submit")
-//     }
-//     else if(currentdiv=="images-block")
-//     {
-//         $(this).attr("data-next","")
-//         $(this).html("submit")
-//     }
-//
-//
-//     $(this).attr("data-current",nextShow)
-//
-//
-//     $("#previous-button").attr("data-previous",currentdiv)
-//     $("#previous-button").attr("data-current",nextShow)
-//
-//     $("#"+currentdiv).hide()
-//     $("#"+nextShow).show()
-// })
-// $("#previous-button").on("click",function (){
-//     var prevShow=$(this).attr("data-previous")
-//     var currentdiv=$(this).attr("data-current")
-//     console.log(currentdiv)
-//     $("#next-button").attr("data-next",currentdiv)
-//     $("#next-button").attr("data-current",prevShow)
-//     if(prevShow=="main-show")
-//     {
-//         $(this).attr("data-previous","")
-//         $("#previous-button").prop('disabled', true);
-//     }
-//
-//     $("#"+currentdiv).hide()
-//     $("#"+prevShow).show()
-//     $(this).attr("data-current",prevShow)
-//     $(this).attr("data-previuos","")
-//
-// })
+
 </script>
 </body>
 </html>
