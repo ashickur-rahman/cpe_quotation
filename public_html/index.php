@@ -11,6 +11,8 @@ $db=DB::class;
 $parentServices=$db::table('parent_service')->select(array("name","id"))->get();
 
 $allData=array();
+$allTime=array();
+$defaultTime=0;
 ?>
 
 <!DOCTYPE html>
@@ -142,12 +144,15 @@ $allData=array();
                                                     <?php
                                                     foreach ($childServiceDetails as $detail)
                                                     {
-                                                        $allData["srv-".$childService->id]["cmp-".$detail->service_complexity_id]["h-".$detail->time_price]=$detail->price;
 
+                                                        if (!in_array($detail->time_price, $allTime)) {
+                                                            $allTime[] = $detail->time_price;
+                                                        }
+                                                        $allData["srv-".$childService->id]["cmp-".$detail->service_complexity_id]["h-".$detail->time_price]=$detail->price;
                                                         if($detail->show_default==1)
                                                         {
+                                                            $defaultTime=$detail->time_price;
                                                             echo complexity_bloc_show($pService->name,$detail,$imageLocation);
-
                                                         }
                                                     }
                                                     ?>
@@ -162,6 +167,7 @@ $allData=array();
                                             $allData=array_merge($allData,$childServiceData['all_data']);
 
                                         }
+                                        $allTime['default_time']=$defaultTime;
                                         ?>
 
                                     </div>
@@ -252,6 +258,18 @@ $allData=array();
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
 <script>
+
+    var bb='';
+    var allData='<?php echo json_encode($allData) ?>'
+    var allTime='<?php echo json_encode($allTime) ?>'
+    allData= JSON.parse(allData);
+    allTime= JSON.parse(allTime);
+
+    var selectedData= {};
+    var totalPrice=parseFloat(0);
+    var cmpPriceByHour={}; //complexity all price store as hour
+    var defaultPriceHour="h-"+allTime['default_time'];
+
     function serviceSelected(selectedData,serviceId)
     {
         return selectedData.hasOwnProperty(serviceId)
@@ -261,89 +279,105 @@ $allData=array();
         if(serviceSelected(selectedData,serviceId))
         {
             var cmp=selectedData[serviceId];
-            return allData[serviceId][cmp]["h-6"];
+            return allData[serviceId][cmp][defaultPriceHour];
 
         }
     }
 
 
-var bb='';
-var allData='<?php echo json_encode($allData) ?>'
-allData= JSON.parse(allData);
-var selectedData=[];
-var totalPrice=parseFloat(0);
-var cmpPriceByHour={}; //complexity all price store as hour
-var defaultPriceHour="h-6";
-$(document).ready(function (){
-    $('.complexity-select').prop('checked', false);
 
+    $(document).ready(function (){
+        $('.complexity-select').prop('checked', false);
 
+    });
 
-});
+    $(".complexity-select").on("change",function (){
+        serviceId=$(this).parent().closest('.service-id').attr("data-service-id")
+        cmpId=$(this).attr("data-complexity-id")
+        // price=$(this).parent().parent().parent().find(".complexity-price").html();
+        price=$(this).attr("data-price");
 
-
-
-
-$(".complexity-select").on("change",function (){
-    serviceId=$(this).parent().closest('.service-id').attr("data-service-id")
-    cmpId=$(this).attr("data-complexity-id")
-    // price=$(this).parent().parent().parent().find(".complexity-price").html();
-    price=$(this).attr("data-price");
-
-    if(selectedServicePrice (selectedData,serviceId,allData))
-    {
-        totalPrice-=parseFloat(selectedServicePrice (selectedData,serviceId,allData))
-    }
-    totalPrice+=parseFloat(price)
-    selectedData[serviceId]=cmpId;
-    cmpPriceByHour[serviceId]=allData[serviceId][cmpId];
-    $("#total-price-show").html(totalPrice)
-
-});
-
-$("#next-button").on("click",function (){
-
-    var currentDiv=$(this).attr("data-current");
-    var nextDiv=$("#"+currentDiv).attr("data-next")
-
-    if(currentDiv=="main-show")
-    {
-        if(Object.keys(cmpPriceByHour).length==0)
+        if(selectedServicePrice (selectedData,serviceId,allData))
         {
-            console.log("no")
-            return
+            totalPrice-=parseFloat(selectedServicePrice (selectedData,serviceId,allData))
         }
-    }
-    // var previousDiv=$("#"+currentDiv).attr("data-previous")
+        totalPrice+=parseFloat(price)
+        selectedData[serviceId]=cmpId;
 
-    $("#previous-button").attr("data-previous",currentDiv)
-    $("#previous-button").attr("data-current",nextDiv)
-    $("#previous-button").prop('disabled', false);
-    $(this).attr("data-current",nextDiv)
+        cmpPriceByHour[serviceId]=allData[serviceId][cmpId];
+        $("#total-price-show").html(totalPrice)
 
-    if(nextDiv=="final-submit")
-    {
-        $("#next-button").html("Submit")
-    }
-    $("#"+currentDiv).hide();
-    $("#"+nextDiv).show();
-});
-$("#previous-button").on("click",function (){
-    var currentDiv=$(this).attr("data-current");
+    });
 
-    var previousDiv=$("#"+currentDiv).attr("data-previous")
-    console.log(previousDiv)
+    $("#next-button").on("click",function (){
 
-    $("#next-button").attr("data-current",previousDiv)
-    $(this).attr("data-current",previousDiv)
+        var currentDiv=$(this).attr("data-current");
+        var nextDiv=$("#"+currentDiv).attr("data-next")
 
-    if(previousDiv=="main-show")
-    {
-        $(this).prop('disabled', true);
-    }
-    $("#"+currentDiv).hide();
-    $("#"+previousDiv).show();
-});
+        if(currentDiv=="main-show")
+        {
+            if(Object.keys(cmpPriceByHour).length==0)
+            {
+                jQuery("#parentServiceShow button:first").click()
+                return
+            }
+            else
+            {
+                var t_allTime=allTime;
+                delete t_allTime.default_time;
+
+                var aa={};
+                for (const [service, complexity] of Object.entries(selectedData)) {
+                    var i= (allData[service][complexity])
+                    for (const  [timeIndex,time] of Object.entries(t_allTime)){
+                        console.log("time: "+time+"  "+i["h-"+time])
+                        if(aa.hasOwnProperty(time))
+                        {
+                            aa[time]=i["h-"+time]+aa[time];
+                        }
+                        else
+                        {
+                            aa[time]=i["h-"+time];
+                        }
+                    }
+
+                }
+                console.log(aa)
+
+
+            }
+            return;
+        }
+        // var previousDiv=$("#"+currentDiv).attr("data-previous")
+
+        $("#previous-button").attr("data-previous",currentDiv)
+        $("#previous-button").attr("data-current",nextDiv)
+        $("#previous-button").prop('disabled', false);
+        $(this).attr("data-current",nextDiv)
+
+        if(nextDiv=="final-submit")
+        {
+            $("#next-button").html("Submit")
+        }
+        $("#"+currentDiv).hide();
+        $("#"+nextDiv).show();
+    });
+    $("#previous-button").on("click",function (){
+        var currentDiv=$(this).attr("data-current");
+
+        var previousDiv=$("#"+currentDiv).attr("data-previous")
+        console.log(previousDiv)
+
+        $("#next-button").attr("data-current",previousDiv)
+        $(this).attr("data-current",previousDiv)
+
+        if(previousDiv=="main-show")
+        {
+            $(this).prop('disabled', true);
+        }
+        $("#"+currentDiv).hide();
+        $("#"+previousDiv).show();
+    });
 
 
 </script>

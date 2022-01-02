@@ -21,7 +21,8 @@ if (!function_exists("complexity_bloc_show"))
                             <div class="custom-control custom-radio">
                                 <input type="radio"
                                        name="%1$s"
-                                       id="complex-%2$s" value="%2$s" class="custom-control-input product complexity-select" data-currency="usd" data-price="%3$s">
+                                       id="complex-%2$s" value="%2$s" class="custom-control-input product complexity-select" data-currency="usd" data-price="%3$s"
+                                       data-complexity-id="cmp-%2$s">
                                 <label class="custom-control-label" for="complex-%2$s">Complexity %4$s</label>
                             </div>
                         </div>
