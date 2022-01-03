@@ -25,6 +25,9 @@ $defaultTime=0;
     <title>Request Quote</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="el/css/elfinder.min.css">
+    <link rel="stylesheet" type="text/css" href="el/css/theme.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <style>
         .justify-content-start {
@@ -77,6 +80,9 @@ $defaultTime=0;
             transform: translate(-50%, -50%);
         }
 
+        .checked{
+            background-color: chocolate;
+        }
 
     </style>
 </head>
@@ -180,13 +186,20 @@ $defaultTime=0;
                         </div>
                     </div>
 
-                    <div class="row " id="price-by-time" data-next="images-block" data-previous="main-show" style="display: none">
-                        Price by Time
+                    <div class="row " style="display: none" id="price-by-time" data-next="images-block" data-previous="main-show" >
+                        <div id="priceselectradio">
+
+                        </div>
+                        <div>
+                            <textarea id="mytextarea" name="notes" placeholder="Add Extra Notes"></textarea>
+                        </div>
+
                     </div>
+
 
                     <div class="row " id="images-block" data-previous="price-by-time" data-next="final-submit"
                          style="display: none">
-                        images
+                        <div id="elfinder"></div>
                     </div>
 
                     <div class="row " id="final-submit" data-next="#" data-previous="images-block" style="display:
@@ -202,9 +215,6 @@ $defaultTime=0;
                         btn-primary ">Next</button>
 
                     </div>
-
-
-
 
                 </div>
             </div>
@@ -256,9 +266,86 @@ $defaultTime=0;
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+
+    <!-- Section JavaScript -->
+    <!-- jQuery and jQuery UI (REQUIRED) -->
+    <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <![endif]-->
+    <!--[if gte IE 9]><!-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!--<![endif]-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <!-- elFinder JS (REQUIRED) -->
+    <script src="el/js/elfinder.min.js"></script>
+
+
+<script src="https://cdn.tiny.cloud/1/72ntt7nspailiho7v22bp1v16ad10axou6itsni3f3387sn5/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
 
+    $(document).ready(function() {
+        $('#elfinder').elfinder(
+            // 1st Arg - options
+            {
+                cssAutoLoad : false,               // Disable CSS auto loading
+                baseUrl : './',                    // Base URL to css/*, js/*
+                url : 'el/php/connector.minimal.php'  // connector URL (REQUIRED)
+                // , lang: 'ru'                    // language (OPTIONAL)
+            },
+            // 2nd Arg - before boot up function
+            function(fm, extraObj) {
+                // `init` event callback function
+                fm.bind('init', function() {
+                    // Optional for Japanese decoder "encoding-japanese.js"
+                    if (fm.lang === 'ja') {
+                        fm.loadScript(
+                            [ '//cdn.rawgit.com/polygonplanet/encoding.js/1.0.26/encoding.min.js' ],
+                            function() {
+                                if (window.Encoding && Encoding.convert) {
+                                    fm.registRawStringDecoder(function(s) {
+                                        return Encoding.convert(s, {to:'UNICODE',type:'string'});
+                                    });
+                                }
+                            },
+                            { loadType: 'tag' }
+                        );
+                    }
+                });
+                // Optional for set document.title dynamically.
+                var title = document.title;
+                fm.bind('open', function() {
+                    var path = '',
+                        cwd  = fm.cwd();
+                    if (cwd) {
+                        path = fm.path(cwd.hash) || null;
+                    }
+                    document.title = path? path + ':' + title : title;
+                }).bind('destroy', function() {
+                    document.title = title;
+                });
+            }
+        );
+    });
+    tinymce.init({
+        selector: '#mytextarea',
+        plugins: 'lists',
+        toolbar: false,
+        branding: false,
+        menubar: false,
+        statusbar: false,
+        setup: function (editor) {
+            editor.ui.registry.addContextToolbar('textselection', {
+                predicate: function (node) {
+                    return !editor.selection.isCollapsed();
+                },
+                items: 'bold italic | bullist numlist',
+                position: 'selection',
+                scope: 'node'
+            });
+        },
+        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+    });
     var bb='';
     var allData='<?php echo json_encode($allData) ?>'
     var allTime='<?php echo json_encode($allTime) ?>'
@@ -269,6 +356,7 @@ $defaultTime=0;
     var totalPrice=parseFloat(0);
     var cmpPriceByHour={}; //complexity all price store as hour
     var defaultPriceHour="h-"+allTime['default_time'];
+    var defaultPriceHour2=allTime['default_time'];
 
     function serviceSelected(selectedData,serviceId)
     {
@@ -305,7 +393,7 @@ $defaultTime=0;
         selectedData[serviceId]=cmpId;
 
         cmpPriceByHour[serviceId]=allData[serviceId][cmpId];
-        $("#total-price-show").html(totalPrice)
+        $("#total-price-show").html(parseFloat(totalPrice).toFixed(2))
 
     });
 
@@ -313,7 +401,7 @@ $defaultTime=0;
 
         var currentDiv=$(this).attr("data-current");
         var nextDiv=$("#"+currentDiv).attr("data-next")
-
+        var radio='';
         if(currentDiv=="main-show")
         {
             if(Object.keys(cmpPriceByHour).length==0)
@@ -339,14 +427,45 @@ $defaultTime=0;
                         {
                             aa[time]=i["h-"+time];
                         }
+
+                        //aa[time]=parseFloat(Math.round(aa[time] * 100) / 100).toFixed(2);
                     }
 
                 }
                 console.log(aa)
+                for (const [time, price] of Object.entries(aa)){
+                    var selectedRadio='';
+                    if(time==defaultPriceHour2)
+                    {
+                        selectedRadio="checked";
+                    }
+                    var rrr=price.toString(10);
+                    var rrr2=parseFloat(rrr).toFixed(2)
+                    radio+='<div class="form-check"><input '+selectedRadio+' class="form-check-input deliverytime" ' +
+                        'value="'+time+'" ' +
+                        'type="radio" ' +
+                        'name="timetodelivery" ' +
+                        'id="timechoose'+time+'">' +
+                        '<label ' +
+                        'class="form-check-label" for="timechoose'+time+'">'+time+' hours - <span ' +
+                        'id="timetodelivery'+time+'">'+parseFloat(rrr2)+'</span> </label></div>';
+                }
+                $("#priceselectradio").html(radio)
 
+                var $checked = $('input[type=radio][name=timetodelivery]:checked');
+                $checked.next('label').addClass('checked');
+
+
+                jQuery('input[type=radio][name=timetodelivery]').change(function() {
+                    var tt=(jQuery(this).val())
+                    $("#total-price-show").html($("#timetodelivery"+tt).html())
+                    $checked.prop('checked', false).next('label').removeClass('checked');
+                    $checked = $(this);
+                    $checked.next('label').addClass('checked');
+                })
 
             }
-            return;
+
         }
         // var previousDiv=$("#"+currentDiv).attr("data-previous")
 
@@ -378,6 +497,7 @@ $defaultTime=0;
         $("#"+currentDiv).hide();
         $("#"+previousDiv).show();
     });
+
 
 
 </script>
