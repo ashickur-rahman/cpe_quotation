@@ -5,18 +5,6 @@
       <path value="$PROJECT_DIR$/libraries/vendor/composer" />
       <path value="$PROJECT_DIR$/libraries/vendor/usmanhalalit/pixie" />
       <path value="$PROJECT_DIR$/libraries/vendor/usmanhalalit/viocon" />
-      <path value="$PROJECT_DIR$/libraries/vendor/psr/http-factory" />
-      <path value="$PROJECT_DIR$/libraries/vendor/psr/http-message" />
-      <path value="$PROJECT_DIR$/libraries/vendor/psr/http-client" />
-      <path value="$PROJECT_DIR$/libraries/vendor/tightenco/collect" />
-      <path value="$PROJECT_DIR$/libraries/vendor/kunalvarma05/dropbox-php-sdk" />
-      <path value="$PROJECT_DIR$/libraries/vendor/guzzlehttp/promises" />
-      <path value="$PROJECT_DIR$/libraries/vendor/guzzlehttp/psr7" />
-      <path value="$PROJECT_DIR$/libraries/vendor/guzzlehttp/guzzle" />
-      <path value="$PROJECT_DIR$/libraries/vendor/symfony/var-dumper" />
-      <path value="$PROJECT_DIR$/libraries/vendor/symfony/polyfill-mbstring" />
-      <path value="$PROJECT_DIR$/libraries/vendor/symfony/deprecation-contracts" />
-      <path value="$PROJECT_DIR$/libraries/vendor/ralouphie/getallheaders" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />
