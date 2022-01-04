@@ -1,4 +1,9 @@
 <?php
+echo dirname($_SERVER['HTTP_HOST']) . '/images/quotation_files/';
+//echo $_SERVER['HTTP_HOST']."/images/quotation_files/";
+echo "<pre>";
+print_r($_SERVER);
+exit();
 function array_key_exists_r($needle, $haystack)
 {
     $result = array_key_exists($needle, $haystack);

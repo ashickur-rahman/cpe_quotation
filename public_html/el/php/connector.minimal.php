@@ -1,6 +1,7 @@
 <?php
 
-session_start();
+include __DIR__."/../../../libraries/settings.php";
+error_reporting(0); // Set E_ALL for debuging
 
 // // Optional exec path settings (Default is called with command name only)
 // define('ELFINDER_TAR_PATH',      '/PATH/TO/tar');
@@ -23,7 +24,7 @@ session_start();
 // define('ELFINDER_DEBUG_ERRORLEVEL', -1); // Error reporting level of debug mode
 
 // // To Enable(true) handling of PostScript files by ImageMagick
-// // It is disabled by default as a countermeasure 
+// // It is disabled by default as a countermeasure
 // // of Ghostscript multiple -dSAFER sandbox bypass vulnerabilities
 // // see https://www.kb.cert.org/vuls/id/332928
 // define('ELFINDER_IMAGEMAGICK_PS', true);
@@ -31,17 +32,15 @@ session_start();
 
 // // load composer autoload before load elFinder autoload If you need composer
 // // You need to run the composer command in the php directory.
-is_readable(__DIR__."/../../../libraries/vendor/autoload.php") && require __DIR__."/../../../libraries/vendor/autoload.php";
+is_readable('./vendor/autoload.php') && require './vendor/autoload.php';
 
 // // elFinder autoload
 require './autoload.php';
 // ===============================================
 
 // // Enable FTP connector netmount
-//elFinder::$netDrivers['ftp'] = 'FTP';
+elFinder::$netDrivers['ftp'] = 'FTP';
 // ===============================================
-define('ELFINDER_DROPBOX_APPKEY',    'ggzcndhyc5e6536');
-define('ELFINDER_DROPBOX_APPSECRET', 'e0lneo132h53mar');
 
 // // Required for Dropbox network mount
 // // Installation by composer
@@ -54,8 +53,6 @@ define('ELFINDER_DROPBOX_APPSECRET', 'e0lneo132h53mar');
 // define('ELFINDER_DROPBOX_APPKEY',    '');
 // define('ELFINDER_DROPBOX_APPSECRET', '');
 // ===============================================
-
-
 
 // // Required for Google Drive network mount
 // // Installation by composer
@@ -138,67 +135,38 @@ define('ELFINDER_DROPBOX_APPSECRET', 'e0lneo132h53mar');
  * @return bool|null
  **/
 function access($attr, $path, $data, $volume, $isDir, $relpath) {
-	$basename = basename($path);
-	return $basename[0] === '.'                  // if file/folder begins with '.' (dot)
-			 && strlen($relpath) !== 1           // but with out volume root
-		? !($attr == 'read' || $attr == 'write') // set read+write to false, other (locked+hidden) set to true
-		:  null;                                 // else elFinder decide it itself
+    $basename = basename($path);
+    return $basename[0] === '.'                  // if file/folder begins with '.' (dot)
+    && strlen($relpath) !== 1           // but with out volume root
+        ? !($attr == 'read' || $attr == 'write') // set read+write to false, other (locked+hidden) set to true
+        :  null;                                 // else elFinder decide it itself
 }
-
-if (isset($_SESSION['fileuploader_show']))
-{
-    if ($_SESSION['fileuploader_show']=='uploadonly')
-    {
-        $RootPath="../../".$_SESSION['target_directory'];
-        $StartPath="../../".$_SESSION['target_directory'];
-        $url=$_SESSION['server_file'].'/explorer/'.$_SESSION['target_directory'];
-
-        if($_SESSION['file_server']=="dropbox")
-        {
-            $RootPath=$_SESSION['target_directory'];
-            $StartPath=$_SESSION['target_directory'];
-            $url='';
-        }
-    }
-
-    if ($_SESSION['fileuploader_show']=='explorer')
-    {
-        $RootPath="../../".$_SESSION['base_directory'];
-        $StartPath="../../".$_SESSION['target_directory'];
-        $url=dirname($_SERVER['PHP_SELF']) . '/../files/'.$_SESSION['customer_directory'];
-
-        if($_SESSION['file_server']=="dropbox")
-        {
-            $RootPath="files";
-            $StartPath=$_SESSION['target_directory'];
-            $url='';
-        }
-
-    }
-    $url='';
-
-}
-
 
 
 // Documentation for connector options:
 // https://github.com/Studio-42/elFinder/wiki/Connector-configuration-options
 $opts = array(
-	// 'debug' => true,
-	'roots' => array(
-		// Items volume
-
-	)
+    // 'debug' => true,
+    'roots' => array(
+        // Items volume
+        array(
+            'driver'        => 'LocalFileSystem',           // driver for accessing file system (REQUIRED)
+            'path'          => $_SESSION['target_directory']."/",                 // path to files (REQUIRED)
+            'URL'           => dirname($_SERVER['HTTP_HOST']) . '/images/quotation_files/'.$_SESSION['folder_name']."/",
+            // URL to files
+            // (REQUIRED)
+            'trashHash'     => 't1_Lw',                     // elFinder's hash of trash folder
+            'winHashFix'    => DIRECTORY_SEPARATOR !== '/', // to make hash same to Linux one on windows too
+            'uploadDeny'    => array('all'),                // All Mimetypes not allowed to upload
+            'uploadAllow'   => array('image/x-ms-bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/x-icon', 'text/plain'), // Mimetype `image` and `text/plain` allowed to upload
+            'uploadOrder'   => array('deny', 'allow'),      // allowed Mimetype `image` and `text/plain` only
+            'accessControl' => 'access'                     // disable and hide dot starting files (OPTIONAL)
+        )
+    )
 );
-$opts['roots'][] =  array(
-    //'phash'        => 'g1_Lw', // set parent to Volume group (g1_) root "/" (Lw)
-    'driver'       => 'dropbox2',
-    'path'          => $RootPath,                 // path to files (REQUIRED)
 
-    'access_token' => 'osOPnHcWto8AAAAAAAAAAVVDOMXGOyAOLgsrSmRcU4BImkOKzQBPbpz-tnX281g-',  // @String your access token
-    'alias' => 'Dropbox'
-);
-
+//echo "<pre>";
+//print_r($opts); exit();
 // run elFinder
 $connector = new elFinderConnector(new elFinder($opts));
 $connector->run();

@@ -1,8 +1,6 @@
 {
 
     "require": {
-        "usmanhalalit/pixie": "2.*@dev",
-        "kunalvarma05/dropbox-php-sdk": "^0.2.2",
-        "tightenco/collect": "^8.77"
+        "usmanhalalit/pixie": "2.*@dev"
     }
 }

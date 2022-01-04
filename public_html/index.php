@@ -1,12 +1,13 @@
 <?php
+session_start();
 include __DIR__ . "/../libraries/classes/dbConnect.php";
 include __DIR__ . "/../libraries/settings.php";
 include __DIR__ . "/../libraries/classes/compexityPictures.php";
 include __DIR__ . "/../libraries/classes/complexityBlock.php";
 
 include "child-services.php";
-$_SESSION['fileuploader_show']=='explorer';
-$_SESSION['target_directory']='files/1';
+$_SESSION['fileuploader_show']='uploadonly';
+$_SESSION['file_server']="dropbox";
 $db=DB::class;
 //$allCategory=$pdo->query("select * from cpe_service")->fetchall();
 $parentServices=$db::table('parent_service')->select(array("name","id"))->get();
@@ -14,6 +15,16 @@ $parentServices=$db::table('parent_service')->select(array("name","id"))->get();
 $allData=array();
 $allTime=array();
 $defaultTime=0;
+
+try {
+    $folderName=time();
+    mkdir($filePath.$folderName,0777);
+}catch (Exception ){
+    $folderName=time()."1";
+    mkdir($filePath.$folderName,0777);
+}
+$_SESSION['target_directory']=$filePath.$folderName;
+$_SESSION['folder_name']=$folderName;
 ?>
 
 <!DOCTYPE html>
@@ -104,7 +115,7 @@ $defaultTime=0;
                             </div>
                         </div>
                     </div>
-                    <div id="main-show" data-next="price-by-time" data-previous="#" class="row ">
+                    <div id="main-show" data-next="price-by-time"  data-previous="#" class="row ">
                         <p>CHOOSE SERVICE</p>
                         <p>
                             What kind of edits do you need today?
@@ -192,20 +203,57 @@ $defaultTime=0;
 
                         </div>
                         <div>
-                            <textarea id="mytextarea" name="notes" placeholder="Add Extra Notes"></textarea>
+                            <textarea id="notes" name="notes" placeholder="Add Extra Notes"></textarea>
                         </div>
 
                     </div>
 
 
-                    <div class="row " id="images-block" data-previous="price-by-time" data-next="final-submit"
-                         style="display: none">
-                        <div id="elfinder"></div>
+                    <div class="row " id="images-block" data-previous="price-by-time" style="display:
+                    none" data-next="final-submit">
+                        <div class="row">
+                            <div class="col-lg-6 col-xl-6">
+                                <div class="card">
+                                    <div class="card-block">
+                                        <!-- Element where elFinder will be created (REQUIRED) -->
+                                        <label for="quantity">Number of Images</label>
+                                        <input type="number" id="quantity" name="quantity" min="1" >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-xl-6">
+                                <div class="card">
+                                    <div class="card-block">
+                                        <!-- Element where elFinder will be created (REQUIRED) -->
+                                        <div id="elfinder"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div class="row " id="final-submit" data-next="#" data-previous="images-block" style="display:
-                    none">
-                        contact
+                    <div class="row " id="final-submit" data-next="submit" style="display:
+                    none"  data-previous="images-block" >
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail4">Name</label>
+                                <input type="customer_name" class="form-control" id="customer-name" placeholder="Name">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail4">Email</label>
+                                <input type="customer_email" class="form-control" id="customer-email"
+                                       placeholder="Email">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail4">Contact Number</label>
+                                <input type="customer_mobile" class="form-control" id="customer-mobile"
+                                       placeholder="Contact Number">
+                            </div>
+
+                        </div>
                     </div>
 
                     <div>
@@ -286,50 +334,16 @@ $defaultTime=0;
 <script>
 
     $(document).ready(function() {
-        $('#elfinder').elfinder(
-            // 1st Arg - options
-            {
-                cssAutoLoad : false,               // Disable CSS auto loading
-                baseUrl : './',                    // Base URL to css/*, js/*
-                url : 'el/php/connector.minimal.php'  // connector URL (REQUIRED)
-                // , lang: 'ru'                    // language (OPTIONAL)
-            },
-            // 2nd Arg - before boot up function
-            function(fm, extraObj) {
-                // `init` event callback function
-                fm.bind('init', function() {
-                    // Optional for Japanese decoder "encoding-japanese.js"
-                    if (fm.lang === 'ja') {
-                        fm.loadScript(
-                            [ '//cdn.rawgit.com/polygonplanet/encoding.js/1.0.26/encoding.min.js' ],
-                            function() {
-                                if (window.Encoding && Encoding.convert) {
-                                    fm.registRawStringDecoder(function(s) {
-                                        return Encoding.convert(s, {to:'UNICODE',type:'string'});
-                                    });
-                                }
-                            },
-                            { loadType: 'tag' }
-                        );
-                    }
-                });
-                // Optional for set document.title dynamically.
-                var title = document.title;
-                fm.bind('open', function() {
-                    var path = '',
-                        cwd  = fm.cwd();
-                    if (cwd) {
-                        path = fm.path(cwd.hash) || null;
-                    }
-                    document.title = path? path + ':' + title : title;
-                }).bind('destroy', function() {
-                    document.title = title;
-                });
-            }
-        );
+        var elFinderInstance = $('#elfinder').elfinder({
+            url : 'el/php/connector.minimal.php',
+            ui : [],
+
+        }).elfinder('instance');
+
+        $('.complexity-select').prop('checked', false);
     });
     tinymce.init({
-        selector: '#mytextarea',
+        selector: '#notes',
         plugins: 'lists',
         toolbar: false,
         branding: false,
@@ -375,10 +389,7 @@ $defaultTime=0;
 
 
 
-    $(document).ready(function (){
-        $('.complexity-select').prop('checked', false);
 
-    });
 
     $(".complexity-select").on("change",function (){
         serviceId=$(this).parent().closest('.service-id').attr("data-service-id")
@@ -478,6 +489,20 @@ $defaultTime=0;
         if(nextDiv=="final-submit")
         {
             $("#next-button").html("Submit")
+        }
+        if(nextDiv=="submit")
+        {
+            console.log("form submit")
+            console.log(selectedData)
+            console.log($(".deliverytime").val())
+            console.log($("#notes").html())
+            console.log($("#quantity").val())
+            console.log(<?php echo $folderName ;?>)
+            console.log($("#customer-name").val())
+            console.log($("#customer-email").val())
+            console.log($("#customer-mobile").val())
+            
+            return;
         }
         $("#"+currentDiv).hide();
         $("#"+nextDiv).show();
