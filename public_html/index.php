@@ -5,7 +5,8 @@ include __DIR__ . "/../libraries/classes/compexityPictures.php";
 include __DIR__ . "/../libraries/classes/complexityBlock.php";
 
 include "child-services.php";
-
+$_SESSION['fileuploader_show']=='explorer';
+$_SESSION['target_directory']='files/1';
 $db=DB::class;
 //$allCategory=$pdo->query("select * from cpe_service")->fetchall();
 $parentServices=$db::table('parent_service')->select(array("name","id"))->get();

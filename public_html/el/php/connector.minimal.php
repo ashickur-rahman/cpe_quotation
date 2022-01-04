@@ -1,6 +1,6 @@
 <?php
 
-error_reporting(0); // Set E_ALL for debuging
+session_start();
 
 // // Optional exec path settings (Default is called with command name only)
 // define('ELFINDER_TAR_PATH',      '/PATH/TO/tar');
@@ -31,15 +31,17 @@ error_reporting(0); // Set E_ALL for debuging
 
 // // load composer autoload before load elFinder autoload If you need composer
 // // You need to run the composer command in the php directory.
-is_readable('./vendor/autoload.php') && require './vendor/autoload.php';
+is_readable(__DIR__."/../../../libraries/vendor/autoload.php") && require __DIR__."/../../../libraries/vendor/autoload.php";
 
 // // elFinder autoload
 require './autoload.php';
 // ===============================================
 
 // // Enable FTP connector netmount
-elFinder::$netDrivers['ftp'] = 'FTP';
+//elFinder::$netDrivers['ftp'] = 'FTP';
 // ===============================================
+define('ELFINDER_DROPBOX_APPKEY',    'ggzcndhyc5e6536');
+define('ELFINDER_DROPBOX_APPSECRET', 'e0lneo132h53mar');
 
 // // Required for Dropbox network mount
 // // Installation by composer
@@ -53,8 +55,7 @@ elFinder::$netDrivers['ftp'] = 'FTP';
 // define('ELFINDER_DROPBOX_APPSECRET', '');
 // ===============================================
 
- define('ELFINDER_DROPBOX_APPKEY',    '');
- define('ELFINDER_DROPBOX_APPSECRET', '');
+
 
 // // Required for Google Drive network mount
 // // Installation by composer
@@ -144,6 +145,41 @@ function access($attr, $path, $data, $volume, $isDir, $relpath) {
 		:  null;                                 // else elFinder decide it itself
 }
 
+if (isset($_SESSION['fileuploader_show']))
+{
+    if ($_SESSION['fileuploader_show']=='uploadonly')
+    {
+        $RootPath="../../".$_SESSION['target_directory'];
+        $StartPath="../../".$_SESSION['target_directory'];
+        $url=$_SESSION['server_file'].'/explorer/'.$_SESSION['target_directory'];
+
+        if($_SESSION['file_server']=="dropbox")
+        {
+            $RootPath=$_SESSION['target_directory'];
+            $StartPath=$_SESSION['target_directory'];
+            $url='';
+        }
+    }
+
+    if ($_SESSION['fileuploader_show']=='explorer')
+    {
+        $RootPath="../../".$_SESSION['base_directory'];
+        $StartPath="../../".$_SESSION['target_directory'];
+        $url=dirname($_SERVER['PHP_SELF']) . '/../files/'.$_SESSION['customer_directory'];
+
+        if($_SESSION['file_server']=="dropbox")
+        {
+            $RootPath="files";
+            $StartPath=$_SESSION['target_directory'];
+            $url='';
+        }
+
+    }
+    $url='';
+
+}
+
+
 
 // Documentation for connector options:
 // https://github.com/Studio-42/elFinder/wiki/Connector-configuration-options
@@ -151,30 +187,16 @@ $opts = array(
 	// 'debug' => true,
 	'roots' => array(
 		// Items volume
-		array(
-			'driver'        => 'LocalFileSystem',           // driver for accessing file system (REQUIRED)
-			'path'          => '../files/',                 // path to files (REQUIRED)
-			'URL'           => dirname($_SERVER['PHP_SELF']) . '/../files/', // URL to files (REQUIRED)
-			'trashHash'     => 't1_Lw',                     // elFinder's hash of trash folder
-			'winHashFix'    => DIRECTORY_SEPARATOR !== '/', // to make hash same to Linux one on windows too
-			'uploadDeny'    => array('all'),                // All Mimetypes not allowed to upload
-			'uploadAllow'   => array('image/x-ms-bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/x-icon', 'text/plain'), // Mimetype `image` and `text/plain` allowed to upload
-			'uploadOrder'   => array('deny', 'allow'),      // allowed Mimetype `image` and `text/plain` only
-			'accessControl' => 'access'                     // disable and hide dot starting files (OPTIONAL)
-		),
-		// Trash volume
-		array(
-			'id'            => '1',
-			'driver'        => 'Trash',
-			'path'          => '../files/.trash/',
-			'tmbURL'        => dirname($_SERVER['PHP_SELF']) . '/../files/.trash/.tmb/',
-			'winHashFix'    => DIRECTORY_SEPARATOR !== '/', // to make hash same to Linux one on windows too
-			'uploadDeny'    => array('all'),                // Recomend the same settings as the original volume that uses the trash
-			'uploadAllow'   => array('image/x-ms-bmp', 'image/gif', 'image/jpeg', 'image/png', 'image/x-icon', 'text/plain'), // Same as above
-			'uploadOrder'   => array('deny', 'allow'),      // Same as above
-			'accessControl' => 'access',                    // Same as above
-		),
+
 	)
+);
+$opts['roots'][] =  array(
+    //'phash'        => 'g1_Lw', // set parent to Volume group (g1_) root "/" (Lw)
+    'driver'       => 'dropbox2',
+    'path'          => $RootPath,                 // path to files (REQUIRED)
+
+    'access_token' => 'osOPnHcWto8AAAAAAAAAAVVDOMXGOyAOLgsrSmRcU4BImkOKzQBPbpz-tnX281g-',  // @String your access token
+    'alias' => 'Dropbox'
 );
 
 // run elFinder
