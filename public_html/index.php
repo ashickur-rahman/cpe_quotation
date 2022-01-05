@@ -372,6 +372,7 @@ $_SESSION['folder_name']=$folderName;
     var cmpPriceByHour={}; //complexity all price store as hour
     var defaultPriceHour="h-"+allTime['default_time'];
     var defaultPriceHour2=allTime['default_time'];
+    var selectedPrice={};
 
     function serviceSelected(selectedData,serviceId)
     {
@@ -387,10 +388,6 @@ $_SESSION['folder_name']=$folderName;
         }
     }
 
-
-
-
-
     $(".complexity-select").on("change",function (){
         serviceId=$(this).parent().closest('.service-id').attr("data-service-id")
         cmpId=$(this).attr("data-complexity-id")
@@ -405,6 +402,8 @@ $_SESSION['folder_name']=$folderName;
         selectedData[serviceId]=cmpId;
 
         cmpPriceByHour[serviceId]=allData[serviceId][cmpId];
+        selectedPrice[serviceId]=($(this).val());
+        console.log(selectedPrice)
         $("#total-price-show").html(parseFloat(totalPrice).toFixed(2))
 
     });
@@ -444,7 +443,6 @@ $_SESSION['folder_name']=$folderName;
                     }
 
                 }
-                console.log(aa)
                 for (const [time, price] of Object.entries(aa)){
                     var selectedRadio='';
                     if(time==defaultPriceHour2)
@@ -466,8 +464,6 @@ $_SESSION['folder_name']=$folderName;
 
                 var $checked = $('input[type=radio][name=timetodelivery]:checked');
                 $checked.next('label').addClass('checked');
-
-
                 jQuery('input[type=radio][name=timetodelivery]').change(function() {
                     var tt=(jQuery(this).val())
                     $("#total-price-show").html($("#timetodelivery"+tt).html())
@@ -475,16 +471,11 @@ $_SESSION['folder_name']=$folderName;
                     $checked = $(this);
                     $checked.next('label').addClass('checked');
                 })
-
             }
-
         }
         // var previousDiv=$("#"+currentDiv).attr("data-previous")
 
-        $("#previous-button").attr("data-previous",currentDiv)
-        $("#previous-button").attr("data-current",nextDiv)
-        $("#previous-button").prop('disabled', false);
-        $(this).attr("data-current",nextDiv)
+
 
         if(nextDiv=="final-submit")
         {
@@ -492,22 +483,17 @@ $_SESSION['folder_name']=$folderName;
         }
         if(nextDiv=="submit")
         {
-            console.log("form submit")
-            console.log(selectedData)
-            console.log($(".deliverytime").val())
-            console.log(tinymce.get("notes").getContent());
-            console.log($("#quantity").val())
-            console.log(<?php echo $folderName ;?>)
-            console.log($("#customer-name").val())
-            console.log($("#customer-email").val())
-            console.log($("#customer-mobile").val())
-
+            var selectedPricePass=new Array();
+            for( [service, cmpPrice] of Object.entries(selectedPrice)){
+                selectedPricePass.push(cmpPrice)
+            }
+            console.log(selectedPricePass)
             $.ajax({
 
                 url : 'ajax/quote_submit.php',
                 type : 'POST',
                 data : {
-                    'selected_' : selectedData,
+                    'selected_' : selectedPricePass,
                     'delivery_time': $(".deliverytime").val(),
                     'notes' : tinymce.get("notes").getContent(),
                     'quantity' : $("#quantity").val(),
@@ -519,11 +505,18 @@ $_SESSION['folder_name']=$folderName;
                 },
                 success : function(data) {
                     console.log('Data: '+data);
+                },
+                beforeSend : function (){
+                    console.log("sending data");
                 }
             });
 
             return;
         }
+        $("#previous-button").attr("data-previous",currentDiv)
+        $("#previous-button").attr("data-current",nextDiv)
+        $("#previous-button").prop('disabled', false);
+        $(this).attr("data-current",nextDiv)
         $("#"+currentDiv).hide();
         $("#"+nextDiv).show();
     });

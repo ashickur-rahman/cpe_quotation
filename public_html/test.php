@@ -1,4 +1,13 @@
 <?php
+
+include __DIR__ . "/../libraries/classes/dbConnect.php";
+include __DIR__ . "/../libraries/settings.php";
+
+$db=DB::class;
+
+
+
+exit();
 echo dirname($_SERVER['HTTP_HOST']) . '/images/quotation_files/';
 //echo $_SERVER['HTTP_HOST']."/images/quotation_files/";
 echo "<pre>";

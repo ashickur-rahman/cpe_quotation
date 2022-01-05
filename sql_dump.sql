@@ -80,16 +80,12 @@ CREATE TABLE `cpe_request_meta` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `request_id` int unsigned NOT NULL,
   `service_complexity_price_id` int unsigned NOT NULL,
-  `addon_crop` tinyint(1) DEFAULT '0',
-  `addon_resize_w` varchar(10) DEFAULT NULL,
-  `addon_resize_h` varchar(10) DEFAULT NULL,
-  `additional_comment` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `request_id` (`request_id`),
   KEY `service_complexity_price_id` (`service_complexity_price_id`),
   CONSTRAINT `cpe_request_meta_ibfk_1` FOREIGN KEY (`request_id`) REFERENCES `cpe_request_receive` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `cpe_request_meta_ibfk_2` FOREIGN KEY (`service_complexity_price_id`) REFERENCES `cpe_service_complexity_price` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -98,6 +94,7 @@ CREATE TABLE `cpe_request_meta` (
 
 LOCK TABLES `cpe_request_meta` WRITE;
 /*!40000 ALTER TABLE `cpe_request_meta` DISABLE KEYS */;
+INSERT INTO `cpe_request_meta` VALUES (41,55,1),(42,55,9),(43,55,10),(44,55,7);
 /*!40000 ALTER TABLE `cpe_request_meta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -116,9 +113,16 @@ CREATE TABLE `cpe_request_receive` (
   `sender_email` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
   `sender_ip` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
   `total_image` int NOT NULL,
-  `image_location` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+  `sample_location` varchar(1000) NOT NULL DEFAULT '',
+  `notes` varchar(1000) DEFAULT NULL,
+  `addon_crop` tinyint(1) DEFAULT '0',
+  `addon_resize_w` varchar(10) DEFAULT NULL,
+  `addon_resize_h` varchar(10) DEFAULT NULL,
+  `request_no` varchar(20) DEFAULT NULL,
+  `delivery_time` varchar(3) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cpe_request_receive_req_no_uindex` (`request_no`)
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,6 +131,7 @@ CREATE TABLE `cpe_request_receive` (
 
 LOCK TABLES `cpe_request_receive` WRITE;
 /*!40000 ALTER TABLE `cpe_request_receive` DISABLE KEYS */;
+INSERT INTO `cpe_request_receive` VALUES (55,'2022-01-05 11:12:54','sdf','213','zx','127.0.0.1',3,'1641381031','&lt;p&gt;f&lt;/p&gt;',0,NULL,NULL,'050120220','18');
 /*!40000 ALTER TABLE `cpe_request_receive` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -263,4 +268,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-02 17:31:25
+-- Dump completed on 2022-01-05 17:29:33
