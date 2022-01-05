@@ -495,13 +495,33 @@ $_SESSION['folder_name']=$folderName;
             console.log("form submit")
             console.log(selectedData)
             console.log($(".deliverytime").val())
-            console.log($("#notes").html())
+            console.log(tinymce.get("notes").getContent());
             console.log($("#quantity").val())
             console.log(<?php echo $folderName ;?>)
             console.log($("#customer-name").val())
             console.log($("#customer-email").val())
             console.log($("#customer-mobile").val())
-            
+
+            $.ajax({
+
+                url : 'ajax/quote_submit.php',
+                type : 'POST',
+                data : {
+                    'selected_' : selectedData,
+                    'delivery_time': $(".deliverytime").val(),
+                    'notes' : tinymce.get("notes").getContent(),
+                    'quantity' : $("#quantity").val(),
+                    'folder' : <?php echo $folderName ;?>,
+                    'c_name' : $("#customer-name").val(),
+                    'c_email' : $("#customer-email").val(),
+                    'c_mobile' : $("#customer-mobile").val(),
+
+                },
+                success : function(data) {
+                    console.log('Data: '+data);
+                }
+            });
+
             return;
         }
         $("#"+currentDiv).hide();
