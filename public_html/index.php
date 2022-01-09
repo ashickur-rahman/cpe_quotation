@@ -256,7 +256,7 @@ $_SESSION['folder_name']=$folderName;
                         </div>
                     </div>
 
-                    <div>
+                    <div id="buttons">
                         <button type="button" disabled id="previous-button" data-previous="" data-current="main-show"
                                 class="btn
                         btn-primary ">Previous</button>
@@ -268,12 +268,13 @@ $_SESSION['folder_name']=$folderName;
                 </div>
             </div>
         </div>
+        <footer id="sticky-footer" class="flex-shrink-0 py-4 bg-dark text-white-50">
+            <div class="container text-center">
+                <small>Price: <span id="total-price-show"></span></small>
+            </div>
+        </footer>
     </div>
-    <footer id="sticky-footer" class="flex-shrink-0 py-4 bg-dark text-white-50">
-        <div class="container text-center">
-            <small>Price: <span id="total-price-show"></span></small>
-        </div>
-    </footer>
+
 <div class="modal fade" id="complexityPicModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -507,7 +508,9 @@ $_SESSION['folder_name']=$folderName;
                     console.log('Data: '+data);
                 },
                 beforeSend : function (){
-                    console.log("sending data");
+                    $("#final-submit").hide();
+                    $("#sticky-footer").hide();
+                    $("#buttons").hide();
                 }
             });
 
@@ -524,7 +527,7 @@ $_SESSION['folder_name']=$folderName;
         var currentDiv=$(this).attr("data-current");
 
         var previousDiv=$("#"+currentDiv).attr("data-previous")
-        console.log(previousDiv)
+
 
         $("#next-button").attr("data-current",previousDiv)
         $(this).attr("data-current",previousDiv)

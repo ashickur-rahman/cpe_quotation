@@ -64,7 +64,6 @@ do {
 } while(1);
 
  $complexity=$_POST['selected_'];
- var_dump($complexity);
 $requestMetaArray=array();
  foreach ($complexity as $product){
     $tempArray=array("request_id"=>$reqId,
