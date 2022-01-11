@@ -10,12 +10,22 @@ if(!function_exists("showChildServices"))
     function showChildServices (Array $childServices,$parentServiceId,$imageLocation,$db=DB::class)
     {
 
+
         $return= '<div class="accordion accordion-flush" id="childServiceShow'.$parentServiceId.'">';
         foreach ($childServices as $childService)
         {
-            //var_dump($childService);
+
             //$allData["srv-".$childService->id]["cmp-".$detail->service_complexity_id]=array();
 
+
+            $childServiceDetails=$db::table('service_all')->select("*")
+                ->where("service_id",$childService->id)
+                ->orderBy ("service_complexity_id")
+                ->get();
+            if(!$childServiceDetails)
+            {
+                continue;
+            }
             $return.='<div class="accordion-item">
     <h2 class="accordion-header" id="child-flush-heading'.$childService->id.'">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#child-flush-collapse'.$childService->id.'" aria-expanded="false" aria-controls="child-flush-collapse'.$childService->id.'">
@@ -28,10 +38,7 @@ if(!function_exists("showChildServices"))
                                                              data-service-id="srv-'
                                                              .$childService->id.'">';
 //complexity code
-            $childServiceDetails=$db::table('service_all')->select("*")
-                ->where("service_id",$childService->id)
-                ->orderBy ("service_complexity_id")
-                ->get();
+
             foreach ($childServiceDetails as $detail)
             {
                 $allData["srv-".$childService->id]["cmp-".$detail->service_complexity_id]["h-".$detail->time_price]=$detail->price;
@@ -45,7 +52,11 @@ $return.='</div>
         }
         $return.="</div>";
         $returnArr['cmplx_block']=$return;
-        $returnArr['all_data']=$allData;
+        if(isset($allData))
+        {
+            $returnArr['all_data']=$allData;
+        }
+
         return $returnArr;
     }
 }

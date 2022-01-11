@@ -48,7 +48,7 @@ foreach ($parentServices as $parent) {
     <div class="row  px-5 my-5">
         <div class="col-lg-3"></div>
         <div class="col-lg-6">
-            <form id="new-service" >
+            <form id="new-complexity" >
                 <div class="form-floating mb-3">
                     <select class="form-select" name="parent_servie" id="parent-service" aria-label="Parent Service">
                         <?=$allParest?>
@@ -94,19 +94,19 @@ foreach ($parentServices as $parent) {
 
                 <div id="sample-pic-row">
                     <div class="form-floating mb-3 mt-3">
-                        <input class="form-control" name="pictures[]" id="picture1" type="text"
+                        <input class="form-control sample_pic" name="pictures[]" id="picture1" type="text"
                                placeholder="Picture Link"/>
                         <label for="picture1">Sample Image Link</label>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input class="form-control" name="pictures[]" id="picture2" type="text"
+                        <input class="form-control sample_pic" name="pictures[]" id="picture2" type="text"
                                placeholder="Picture Link"/>
                         <label for="picture2">Sample Image Link</label>
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input class="form-control" name="pictures[]" id="picture3" type="text"
+                        <input class="form-control sample_pic" name="pictures[]" id="picture3" type="text"
                                placeholder="Picture Link"/>
                         <label for="picture3">Sample Image Link</label>
                     </div>
@@ -143,6 +143,20 @@ foreach ($parentServices as $parent) {
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
+    $.validator.prototype.checkForm = function (){
+        this.prepareForm();
+        for ( var i = 0, elements = (this.currentElements = this.elements()); elements[i]; i++ ) {
+            if (this.findByName( elements[i].name ).length != undefined && this.findByName( elements[i].name ).length > 1) {
+                for (var cnt = 0; cnt < this.findByName( elements[i].name ).length; cnt++) {
+                    this.check( this.findByName( elements[i].name )[cnt] );
+                }
+            }
+            else {
+                this.check( elements[i] );
+            }
+        }
+        return this.valid();
+    };
     var allServices=<?php echo json_encode($allServices) ?>;
     var totalPic=parseInt(4);
     // allServices = JSON.stringify(allServices);
@@ -166,26 +180,38 @@ foreach ($parentServices as $parent) {
 
         //$('#parent-service').select2();
         // Wait for the DOM to be ready
-        $("#new-service").validate({
+        $("#new-complexity").validate({
 
             rules: {
-                parent_servie: "required",
-                service: "required"
+                service: "required",
+                complexity: "required",
+                'pictures[]': {
+                    required: true
+                }
             },
             messages: {
-                parent_servie: "Please Select Parent Service ",
-                service: "Please Enter Service Name"
+                service: "Select A Service",
+                complexity: "Please Enter Complexity Name"
             },
 
             submitHandler: function(form) {
                 var name='';
+
+                var sample_picture=($("input[name='pictures[]']")
+                    .map(function(){return $(this).val();}).get());
                 $.ajax({
 
-                    url : 'ajax/new_service.php',
+                    url : 'ajax/new_complexity.php',
                     type : 'POST',
                     data : {
-                        'parent' : $("#parent-service").val(),
                         'service' : $("#service-name").val(),
+                        'name': $("#complexity-name").val(),
+                        'h18':$("#price-18").val(),
+                        'h36':$("#price-36").val(),
+                        'h48':$("#price-48").val(),
+                        'h72':$("#price-72").val(),
+                        'sample_images':sample_picture
+
                     },
                     success : function(data) {
                         console.log(data)

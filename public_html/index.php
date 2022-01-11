@@ -132,7 +132,10 @@ $_SESSION['folder_name']=$folderName;
                                 $childServices=$db::table('service')->select("id","name")
                                     ->where("parent_service",$pService->id)
                                     ->get();
-
+                                if(!$childServices)
+                                {
+                                    continue;
+                                }
                                 ?>
                                 <div class="accordion-item" >
                                     <h2 class="accordion-header" id="flush-heading<?=$pService->id?>">
@@ -153,6 +156,7 @@ $_SESSION['folder_name']=$folderName;
                                                 ->where("service_id",$childService->id)
                                                 ->orderBy ("service_complexity_id")
                                                 ->get();
+
                                             ?>
                                             <div class="accordion-body" style="background-color:aqua">
 
@@ -182,7 +186,11 @@ $_SESSION['folder_name']=$folderName;
                                         {
                                             $childServiceData= showChildServices($childServices,$pService->id,$imageLocation);
                                             echo $childServiceData['cmplx_block'];
-                                            $allData=array_merge($allData,$childServiceData['all_data']);
+                                            if(isset($childServiceData['all_data']))
+                                            {
+                                                $allData=array_merge($allData,$childServiceData['all_data']);
+                                            }
+
 
                                         }
                                         $allTime['default_time']=$defaultTime;
