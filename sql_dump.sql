@@ -56,7 +56,7 @@ CREATE TABLE `cpe_parent_service` (
   `name` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,7 +65,7 @@ CREATE TABLE `cpe_parent_service` (
 
 LOCK TABLES `cpe_parent_service` WRITE;
 /*!40000 ALTER TABLE `cpe_parent_service` DISABLE KEYS */;
-INSERT INTO `cpe_parent_service` VALUES (1,'Clipping Path','2021-12-14 02:12:18'),(2,'Multi-clipping Path','2021-12-14 02:12:30'),(3,'Image Musking','2021-12-14 02:12:39'),(4,'Shadow','2021-12-14 02:12:46');
+INSERT INTO `cpe_parent_service` VALUES (1,'Clipping Path','2021-12-14 02:12:18'),(2,'Multi-clipping Path','2021-12-14 02:12:30'),(3,'Image Musking','2021-12-14 02:12:39'),(4,'Shadow','2021-12-14 02:12:46'),(5,'fff','2022-01-09 13:10:39'),(6,'fff3','2022-01-09 13:12:37'),(7,'Noor','2022-01-09 13:17:35'),(8,'Noor1','2022-01-09 13:19:40'),(9,'66532','2022-01-09 14:27:40'),(10,'665323','2022-01-09 14:29:52'),(11,'ff','2022-01-09 14:30:31');
 /*!40000 ALTER TABLE `cpe_parent_service` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -85,7 +85,7 @@ CREATE TABLE `cpe_request_meta` (
   KEY `service_complexity_price_id` (`service_complexity_price_id`),
   CONSTRAINT `cpe_request_meta_ibfk_1` FOREIGN KEY (`request_id`) REFERENCES `cpe_request_receive` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `cpe_request_meta_ibfk_2` FOREIGN KEY (`service_complexity_price_id`) REFERENCES `cpe_service_complexity_price` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,7 +94,7 @@ CREATE TABLE `cpe_request_meta` (
 
 LOCK TABLES `cpe_request_meta` WRITE;
 /*!40000 ALTER TABLE `cpe_request_meta` DISABLE KEYS */;
-INSERT INTO `cpe_request_meta` VALUES (41,55,1),(42,55,9),(43,55,10),(44,55,7);
+INSERT INTO `cpe_request_meta` VALUES (41,55,1),(42,55,9),(43,55,10),(44,55,7),(45,56,1),(46,57,1);
 /*!40000 ALTER TABLE `cpe_request_meta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -122,7 +122,7 @@ CREATE TABLE `cpe_request_receive` (
   `delivery_time` varchar(3) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cpe_request_receive_req_no_uindex` (`request_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,7 +131,7 @@ CREATE TABLE `cpe_request_receive` (
 
 LOCK TABLES `cpe_request_receive` WRITE;
 /*!40000 ALTER TABLE `cpe_request_receive` DISABLE KEYS */;
-INSERT INTO `cpe_request_receive` VALUES (55,'2022-01-05 11:12:54','sdf','213','zx','127.0.0.1',3,'1641381031','&lt;p&gt;f&lt;/p&gt;',0,NULL,NULL,'050120220','18');
+INSERT INTO `cpe_request_receive` VALUES (55,'2022-01-05 11:12:54','sdf','213','zx','127.0.0.1',3,'1641381031','&lt;p&gt;f&lt;/p&gt;',0,NULL,NULL,'050120220','18'),(56,'2022-01-08 09:33:12','sdf','85464231','zxc@sdf.com','127.0.0.1',23,'1641634365','',0,NULL,NULL,'0801202255','18'),(57,'2022-01-08 09:38:49','sdf','85464231','zxc@sdf.com','127.0.0.1',23,'1641634709','',0,NULL,NULL,'0801202256','18');
 /*!40000 ALTER TABLE `cpe_request_receive` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -150,7 +150,7 @@ CREATE TABLE `cpe_service` (
   PRIMARY KEY (`id`),
   KEY `parent_service` (`parent_service`),
   CONSTRAINT `cpe_service_ibfk_1` FOREIGN KEY (`parent_service`) REFERENCES `cpe_parent_service` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -159,7 +159,7 @@ CREATE TABLE `cpe_service` (
 
 LOCK TABLES `cpe_service` WRITE;
 /*!40000 ALTER TABLE `cpe_service` DISABLE KEYS */;
-INSERT INTO `cpe_service` VALUES (1,'Clipping Path',1,'2021-12-13 17:25:26'),(2,'Multi-Ciping Path',2,'2021-12-14 01:50:20'),(3,'Image Musking',3,'2021-12-14 01:50:41'),(4,'Natural Shadow',4,'2021-12-14 02:14:32'),(5,'Reflaction Shadow',4,'2021-12-14 02:14:45'),(6,'Drop Shadow',4,'2021-12-14 02:15:59');
+INSERT INTO `cpe_service` VALUES (1,'Clipping Path',1,'2021-12-13 17:25:26'),(2,'Multi-Ciping Path',2,'2021-12-14 01:50:20'),(3,'Image Musking',3,'2021-12-14 01:50:41'),(4,'Natural Shadow',4,'2021-12-14 02:14:32'),(5,'Reflaction Shadow',4,'2021-12-14 02:14:45'),(6,'Drop Shadow',4,'2021-12-14 02:15:59'),(7,'Replacement',4,'2022-01-09 14:44:16');
 /*!40000 ALTER TABLE `cpe_service` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -268,4 +268,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-05 17:29:33
+-- Dump completed on 2022-01-12 17:07:26

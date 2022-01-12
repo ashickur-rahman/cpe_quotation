@@ -42,6 +42,11 @@ foreach ($parentServices as $parent) {
     <title>New Service Complexity</title>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
 <div class="container ">
@@ -185,13 +190,27 @@ foreach ($parentServices as $parent) {
             rules: {
                 service: "required",
                 complexity: "required",
+                complexity: "required",
+                price18: "required",
+                price36: "required",
+                price48: "required",
+                price72: "required",
                 'pictures[]': {
                     required: true
                 }
             },
             messages: {
                 service: "Select A Service",
-                complexity: "Please Enter Complexity Name"
+                complexity: "Please Enter Complexity Name",
+                price18: "Please Enter Price",
+                price36: "Please Enter Price",
+                price48: "Please Enter Price",
+                price72: "Please Enter Price",
+                'pictures[]': 'Insert Samle Image Name',
+            },
+
+            errorPlacement: function(error, element) {
+                error.insertAfter(element.closest('div'));
             },
 
             submitHandler: function(form) {
@@ -215,6 +234,7 @@ foreach ($parentServices as $parent) {
                     },
                     success : function(data) {
                         console.log(data)
+
                         if(data=="duplicate")
                         {
                             $.notify("Already Saved as Same Name!", "error");
